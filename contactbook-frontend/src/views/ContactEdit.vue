@@ -23,6 +23,7 @@ export default {
     },
     props: {
         contactId: { type: Number, required: true },
+        isAdd: { type: Boolean, required: false },
     },
     data() {
         return {
@@ -33,14 +34,24 @@ export default {
     methods: {
         async getContact(id) {
             try {
-                this.contact = await contactService.get(id);
+                if (id) {
+                    this.contact = await contactService.get(id);
+                } else {
+                    this.contact = {
+                    name: "",
+                    email: "",
+                    address: "",
+                    phone: "",
+                    favorite: false,
+                    };
+                }
             } catch (error) {
                 console.log(error);
                 // Redirect to NotFound page and keep URL intact
                 this.$router.push({
-                    name: 'notfound',
+                    name: "notfound",
                     params: {
-                        pathMatch: this.$route.path.split('/').slice(1)
+                    pathMatch: this.$route.path.split("/").slice(1),
                     },
                     query: this.$route.query,
                     hash: this.$route.hash,
@@ -50,8 +61,13 @@ export default {
 
         async onUpdateContact(contact) {
             try {
-                await contactService.update(contact.id, contact);
-                this.message = 'Liên hệ được cập nhật thành công.';
+                if (this.isAdd) {
+                    await contactService.create(contact);
+                    this.message = "Thêm liên hệ thành công";
+                } else {
+                    await contactService.update(contact);
+                    this.message = "Liên hệ được cập nhật thành công.";
+                }
             } catch (error) {
                 console.log(error);
             }
