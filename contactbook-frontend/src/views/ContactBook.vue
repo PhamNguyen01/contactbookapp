@@ -50,6 +50,15 @@
                     <i class="fas fa-address-card" />
                 </h4>
                 <ContactCard :contact="activeContact" />
+                <router-link
+                    :to="{
+                        name: 'contact.edit',
+                        params: { id: activeContact.id },
+                    }"
+                >
+                    <span class="mt-2 badge badge-warning">
+                        <i class="fas fa-edit" /> Hiệu chỉnh</span>
+                </router-link>
             </div>
         </div>
     </div>
